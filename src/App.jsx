@@ -1,6 +1,10 @@
 import { BrowserRouter, Navigate, Route, Routes } from "react-router-dom";
 import GlobalStyles from "./styles/GlobalStyles.js";
 
+import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
+import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+
+import AppLayout from "./ui/AppLayout.jsx";
 import Dashboard from "./pages/Dashboard.jsx";
 import Bookings from "./pages/Bookings.jsx";
 import Cabins from "./pages/Cabins.jsx";
@@ -9,11 +13,22 @@ import NewUsers from "./pages/Users.jsx";
 import Settings from "./pages/Settings.jsx";
 import Account from "./pages/Account.jsx";
 import PageNotFound from "./pages/PageNotFound.jsx";
-import AppLayout from "./ui/AppLayout.jsx";
+
+// creating the clint / sets the cache behind the scenes
+const queryClint = new QueryClient({
+  defaultOptions: {
+    queries: {
+      // the amount of time before refetching the data (one minute in milliseconds)
+      // staleTime: 60 * 1000,
+      staleTime: 0,
+    },
+  },
+});
 
 const App = () => {
   return (
-    <>
+    <QueryClientProvider client={queryClint}>
+      <ReactQueryDevtools initialIsOpen={false} />
       <GlobalStyles />
       <BrowserRouter>
         <Routes>
@@ -30,7 +45,7 @@ const App = () => {
           <Route path="*" element={<PageNotFound />} />
         </Routes>
       </BrowserRouter>
-    </>
+    </QueryClientProvider>
   );
 };
 
