@@ -1,10 +1,9 @@
+/* eslint-disable react/prop-types */
 import styled from "styled-components";
 import { formatCurrency } from "../../utils/helpers.js";
-import { useMutation, useQueryClient } from "@tanstack/react-query";
-import { deleteCabin } from "../../services/apiCabins.js";
-import toast from "react-hot-toast";
 import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm.jsx";
+import { useDeleteCabin } from "./useDeleteCabin.js";
 
 const TableRow = styled.div`
   display: grid;
@@ -48,17 +47,8 @@ const Discount = styled.div`
 export const CabinRow = ({ cabin }) => {
   const [showForm, setShowForm] = useState(false);
 
-  const queryClinet = useQueryClient();
-  const { isPending, mutate } = useMutation({
-    mutationFn: (id) => deleteCabin(id),
-    onSuccess: () => {
-      toast.success("Cabin successfully deleted");
-      queryClinet.invalidateQueries({ queryKey: ["cabin"] });
-    },
-    onError: (err) => {
-      toast.error(err.message);
-    },
-  });
+  // custom hook
+  const { isPending, mutate } = useDeleteCabin();
 
   return (
     <>
@@ -67,9 +57,11 @@ export const CabinRow = ({ cabin }) => {
         <div>{cabin.name}</div>
         <div>Fits up to {cabin.maxCapacity} guests</div>
         <Price>{formatCurrency(cabin.regularPrice)}</Price>
-        {formatCurrency(cabin.discount) ? (
+        {cabin.discount ? (
           <Discount>{formatCurrency(cabin.discount)}</Discount>
-        ) : null}
+        ) : (
+          <span>&mdash;</span>
+        )}
         <div>
           <button
             onClick={() => setShowForm((showForm) => !showForm)}
