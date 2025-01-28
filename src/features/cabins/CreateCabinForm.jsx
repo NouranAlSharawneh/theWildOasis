@@ -6,7 +6,7 @@ import FileInput from "../../ui/FileInput";
 import Textarea from "../../ui/Textarea";
 import Input from "../../ui/Input.jsx";
 import { useCreateCabin } from "./useCreateCabin.js";
-import { useEditCabin } from "./useEditCabin.js";
+import { useUpdateCabin } from "./useUpdateCabin.js";
 
 function CreateCabinForm({ cabinToEdit = {} }) {
   const { id: editId, ...cabinEditValues } = cabinToEdit;
@@ -20,14 +20,14 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
   // custom hooks
   const { createCabin, isPending } = useCreateCabin();
-  const { isEditing, editCabin } = useEditCabin();
+  const { isEditing, updateCabin } = useUpdateCabin();
   const isWorking = isPending || isEditing;
 
   const onSubmint = (data) => {
     const image = typeof data.image === "string" ? data.image : data.image[0];
 
     if (isEditSession) {
-      editCabin(
+      updateCabin(
         { newCabinData: { ...data, image }, id: editId },
         {
           onSuccess: () => reset(),
