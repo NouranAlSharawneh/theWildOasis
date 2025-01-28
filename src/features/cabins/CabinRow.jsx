@@ -4,6 +4,8 @@ import { formatCurrency } from "../../utils/helpers.js";
 import { useState } from "react";
 import CreateCabinForm from "./CreateCabinForm.jsx";
 import { useDeleteCabin } from "./useDeleteCabin.js";
+import { HiPencil, HiSquare2Stack, HiTrash } from "react-icons/hi2";
+import { useCreateCabin } from "./useCreateCabin.js";
 
 const TableRow = styled.div`
   display: grid;
@@ -49,6 +51,18 @@ export const CabinRow = ({ cabin }) => {
 
   // custom hook
   const { isPending, mutate } = useDeleteCabin();
+  const { isPending: isPendingCreate, createCabin } = useCreateCabin();
+
+  const handleDupliacte = () => {
+    createCabin({
+      name: `Copy of ${cabin.name}`,
+      maxCapacity: cabin.maxCapacity,
+      regularPrice: cabin.regularPrice,
+      discount: cabin.discount,
+      description: cabin.description,
+      image: cabin.image,
+    });
+  };
 
   return (
     <>
@@ -63,14 +77,17 @@ export const CabinRow = ({ cabin }) => {
           <span>&mdash;</span>
         )}
         <div>
+          <button onClick={handleDupliacte} disabled={isPendingCreate}>
+            <HiSquare2Stack />
+          </button>
           <button
             onClick={() => setShowForm((showForm) => !showForm)}
             disabled={isPending}
           >
-            Edit
+            <HiPencil />
           </button>
           <button onClick={() => mutate(cabin.id)} disabled={isPending}>
-            Delete
+            <HiTrash />
           </button>
         </div>
       </TableRow>

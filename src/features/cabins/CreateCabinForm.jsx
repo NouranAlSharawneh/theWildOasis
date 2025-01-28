@@ -24,10 +24,7 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   const isWorking = isPending || isEditing;
 
   const onSubmint = (data) => {
-    let image =
-      typeof data.image === "object" && data.image.length > 0
-        ? data.image[0]
-        : cabinToEdit.image;
+    const image = typeof data.image === "string" ? data.image : data.image[0];
 
     if (isEditSession) {
       editCabin(
