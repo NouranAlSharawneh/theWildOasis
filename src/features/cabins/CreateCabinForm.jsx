@@ -8,7 +8,7 @@ import Input from "../../ui/Input.jsx";
 import { useCreateCabin } from "./useCreateCabin.js";
 import { useUpdateCabin } from "./useUpdateCabin.js";
 
-function CreateCabinForm({ cabinToEdit = {} }) {
+function CreateCabinForm({ cabinToEdit = {}, onCloseModal }) {
   const { id: editId, ...cabinEditValues } = cabinToEdit;
   const isEditSession = Boolean(editId);
 
@@ -33,7 +33,16 @@ function CreateCabinForm({ cabinToEdit = {} }) {
           onSuccess: () => reset(),
         }
       );
-    } else createCabin({ ...data, image: image }, { onSuccess: () => reset() });
+    } else
+      createCabin(
+        { ...data, image: image },
+        {
+          onSuccess: () => {
+            reset();
+            onCloseModal?.();
+          },
+        }
+      );
   };
 
   const onError = (errors) => {
@@ -41,7 +50,10 @@ function CreateCabinForm({ cabinToEdit = {} }) {
   };
 
   return (
-    <Form onSubmit={handleSubmit(onSubmint, onError)}>
+    <Form
+      onSubmit={handleSubmit(onSubmint, onError)}
+      type={onCloseModal ? "modal" : "default"}
+    >
       <FormRow label="Cabin name" error={errors?.name?.message}>
         <Input
           disabled={isWorking}
@@ -126,7 +138,11 @@ function CreateCabinForm({ cabinToEdit = {} }) {
 
       <FormRow>
         {/* type is an HTML attribute! */}
-        <Button variation="secondary" type="reset">
+        <Button
+          variation="secondary"
+          onClick={() => onCloseModal?.()}
+          type="reset"
+        >
           Cancel
         </Button>
         <Button disabled={isPending}>
