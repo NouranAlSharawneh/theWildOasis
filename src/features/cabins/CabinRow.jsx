@@ -8,6 +8,7 @@ import { useCreateCabin } from "./useCreateCabin.js";
 import Modal from "../../ui/Modal.jsx";
 import ConfirmDelete from "../../ui/ConfirmDelete.jsx";
 import Table from "../../ui/Table.jsx";
+import Menus from "../../ui/Menus.jsx";
 
 // const TableRow = styled.div`
 //   display: grid;
@@ -76,33 +77,36 @@ export const CabinRow = ({ cabin }) => {
         <span>&mdash;</span>
       )}
       <div>
-        <button onClick={handleDupliacte} disabled={isPendingCreate}>
-          <HiSquare2Stack />
-        </button>
-
         <Modal>
-          <Modal.Open opens="edit">
-            <button disabled={isPending}>
-              <HiPencil />
-            </button>
-          </Modal.Open>
-          <Modal.Window name="edit">
-            <CreateCabinForm cabinToEdit={cabin} />
-          </Modal.Window>
+          <Menus.Menu>
+            <Menus.Toggle id={cabin.id} />
 
-          <Modal.Open opens="delete">
-            <button>
-              <HiTrash />
-            </button>
-          </Modal.Open>
+            <Menus.List id={cabin.id}>
+              <Menus.Button icon={<HiSquare2Stack />} onClick={handleDupliacte}>
+                Dupliacte
+              </Menus.Button>
 
-          <Modal.Window name="delete">
-            <ConfirmDelete
-              resourceName={cabin.name}
-              disabled={isPending}
-              onConfirm={() => mutate(cabin.id)}
-            />
-          </Modal.Window>
+              <Modal.Open opens="edit">
+                <Menus.Button icon={<HiPencil />}>Edit</Menus.Button>
+              </Modal.Open>
+
+              <Modal.Open opens="delete">
+                <Menus.Button icon={<HiTrash />}>Delete</Menus.Button>
+              </Modal.Open>
+            </Menus.List>
+
+            <Modal.Window name="edit">
+              <CreateCabinForm cabinToEdit={cabin} />
+            </Modal.Window>
+
+            <Modal.Window name="delete">
+              <ConfirmDelete
+                resourceName={cabin.name}
+                disabled={isPending}
+                onConfirm={() => mutate(cabin.id)}
+              />
+            </Modal.Window>
+          </Menus.Menu>
         </Modal>
       </div>
     </Table.Row>
