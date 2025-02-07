@@ -12,15 +12,24 @@ export const useBookings = () => {
       ? null
       : { field: "status", value: filterValue, method: "eq" };
 
-  // For Soring
+  // For Sorting
   const currentSortBy = searchParams.get("sortBy") || "startDate-desc";
   const [field, direction] = currentSortBy.split("-");
   const sortBy = { field, direction };
 
-  const { data, isPending, error } = useQuery({
-    queryKey: ["bookings", filter, sortBy],
-    queryFn: () => getBookings({ filter, sortBy }),
+  // Pagination
+  const currentPage = !searchParams.get("page")
+    ? 1
+    : Number(searchParams.get("page"));
+
+  const {
+    data: { data, count } = {},
+    isPending,
+    error,
+  } = useQuery({
+    queryKey: ["bookings", filter, sortBy, currentPage],
+    queryFn: () => getBookings({ filter, sortBy, currentPage }),
   });
 
-  return { data, isPending, error };
+  return { data, isPending, error, count };
 };
