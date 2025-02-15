@@ -17,6 +17,7 @@ import { Toaster } from "react-hot-toast";
 import { StyleSheetManager } from "styled-components";
 import Booking from "./pages/Booking.jsx";
 import Checkin from "./pages/Checkin.jsx";
+import ProtectedRoute from "./ui/ProtectedRoute.jsx";
 
 // creating the clint / sets the cache behind the scenes
 const queryClint = new QueryClient({
@@ -37,7 +38,13 @@ const App = () => {
         <GlobalStyles />
         <BrowserRouter>
           <Routes>
-            <Route element={<AppLayout />}>
+            <Route
+              element={
+                <ProtectedRoute>
+                  <AppLayout />
+                </ProtectedRoute>
+              }
+            >
               <Route index element={<Navigate replace to={"dashboard"} />} />
               <Route path="dashboard" element={<Dashboard />} />
               <Route path="bookings" element={<Bookings />} />
