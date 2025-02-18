@@ -1,6 +1,6 @@
 import { useEffect, useRef } from "react";
 
-export const useOutsideClick = (callback) => {
+export const useOutsideClick = (callback, listenCapturping = true) => {
   const ref = useRef();
   useEffect(() => {
     const handleClick = (e) => {
@@ -8,13 +8,11 @@ export const useOutsideClick = (callback) => {
         callback();
       }
     };
-    document.addEventListener("click", handleClick, { capture: true });
+    document.addEventListener("click", handleClick, listenCapturping);
 
     return () =>
-      document.removeEventListener("click", handleClick, {
-        capture: true,
-      });
-  }, [callback]);
+      document.removeEventListener("click", handleClick, listenCapturping);
+  }, [callback, listenCapturping]);
 
   return ref;
 };

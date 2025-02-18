@@ -222,7 +222,8 @@ const Menus = ({ children }) => {
 const Toggle = ({ id }) => {
   const { open, close, openId, setPosition } = useContext(MenusContext);
 
-  const handleClick = () => {
+  const handleClick = (e) => {
+    e.stopPropagation();
     // const rect = e.target.closest("button").getBoundingClientRect();
     setPosition({
       x: 32,
@@ -241,9 +242,15 @@ const Toggle = ({ id }) => {
 const List = ({ id, children }) => {
   const { openId, position } = useContext(MenusContext);
 
+  const ref = useOutsideClick(close, false);
+
   if (openId !== id) return null;
 
-  return <StyledList position={position}>{children}</StyledList>;
+  return (
+    <StyledList position={position} ref={ref}>
+      {children}
+    </StyledList>
+  );
 };
 
 const Button = ({ children, icon, onClick }) => {
